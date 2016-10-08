@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Game {
-	private int size;
+	private int gridSize;
 	private int mineCount;
 	private String[][] grid;
 
@@ -16,11 +16,11 @@ public class Game {
 	 */
 	private TreeMap<Integer, TreeSet<Integer>> mines = new TreeMap<Integer, TreeSet<Integer>>();
 
-	public Game(int size, int mineCount) {
-		this.size = size;
+	public Game(int gridSize, int mineCount) {
+		this.gridSize = gridSize;
 		this.mineCount = mineCount;
 
-		grid = new String[size][size];
+		grid = new String[gridSize][gridSize];
 
 		setupMines();
 	}
@@ -52,7 +52,7 @@ public class Game {
 		int[] location = new int[2];
 
 		for (int i = 0; i < 2; i++) {
-			location[i] = random.nextInt(size);
+			location[i] = random.nextInt(gridSize);
 		}
 
 		return location;
@@ -76,7 +76,7 @@ public class Game {
 			StringBuilder stringBuilder1 = new StringBuilder();
 			StringBuilder stringBuilder2 = new StringBuilder();
 
-			for (int i = 0; i < size; i++) {
+			for (int i = 0; i < gridSize; i++) {
 				stringBuilder1.append(i + " ");
 				stringBuilder2.append("- ");
 			}
@@ -86,11 +86,11 @@ public class Game {
 
 		System.out.println(gridHeader);
 
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < gridSize; i++) {
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append(i + "|");
 
-			for (int j = 0; j < size; j++) {
+			for (int j = 0; j < gridSize; j++) {
 				if (grid[i][j] == null) {
 					stringBuilder.append("X ");
 				} else {
@@ -105,10 +105,10 @@ public class Game {
 	private String getErrorMessageForMove(int rowIndex, int columnIndex) {
 		String errorMessage = null;
 
-		if (rowIndex >= size) {
+		if (rowIndex >= gridSize) {
 			errorMessage = "Row index is out of bound.";
 		}
-		else if (columnIndex >= size) {
+		else if (columnIndex >= gridSize) {
 			errorMessage = "Column index is out of bound.";
 		}
 		else if (grid[rowIndex][columnIndex] != null) {
@@ -140,7 +140,7 @@ public class Game {
 
 			moveCount++;
 
-			if ((size ^ 2 - moveCount) == mineCount) {
+			if ((Math.pow(gridSize, 2) - moveCount) == mineCount) {
 				status = Status.WIN;
 			}
 		}
@@ -167,7 +167,7 @@ public class Game {
 			);
 		}
 
-		if (rowIndex < (size - 1) && mines.containsKey(rowIndex + 1)) {
+		if (rowIndex < (gridSize - 1) && mines.containsKey(rowIndex + 1)) {
 			surroundingMineCount += calculateSurroundingMineCount(
 				mines.get(rowIndex + 1),
 				columnIndex,
@@ -189,7 +189,7 @@ public class Game {
 			surroundingMineCount++;
 		}
 
-		if (columnIndex < (size - 1) && columnSet.contains(columnIndex + 1)) {
+		if (columnIndex < (gridSize - 1) && columnSet.contains(columnIndex + 1)) {
 			surroundingMineCount++;
 		}
 
