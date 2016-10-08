@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.Map.Entry;
 
 public class Game {
 	private int gridSize;
@@ -102,30 +103,25 @@ public class Game {
 		}
 	}
 
-	private String getErrorMessageForMove(int rowIndex, int columnIndex) {
-		String errorMessage = null;
+	private boolean isValidMove(int rowIndex, int columnIndex) {
+		boolean valid = (rowIndex >= 0) && (rowIndex < gridSize);
+		valid = valid && (columnIndex >= 0) && (columnIndex < gridSize);
 
-		if (rowIndex >= gridSize) {
-			errorMessage = "Row index is out of bound.";
-		}
-		else if (columnIndex >= gridSize) {
-			errorMessage = "Column index is out of bound.";
-		}
-		else if (grid[rowIndex][columnIndex] != null) {
-			errorMessage = "This cell has already been uncovered.";
+		if (valid && grid[rowIndex][columnIndex] != null) {
+			System.out.println("This cell has already been uncovered.");
+			valid = false;
 		}
 
-		return errorMessage;
+		return valid;
 	}
 
-	public String move(int rowIndex, int columnIndex) {
-		String errorMessage = getErrorMessageForMove(rowIndex, columnIndex);
-		if (errorMessage != null) {
-			return errorMessage;
+	public void move(int rowIndex, int columnIndex) {
+		if (!isValidMove(rowIndex, columnIndex)) {
+			return;
 		}
 
 		if (containsMine(rowIndex, columnIndex)) {
-			grid[rowIndex][columnIndex] = "M";
+			showAllMines();
 			status = Status.LOSE;
 		}
 		else {
@@ -145,7 +141,7 @@ public class Game {
 			}
 		}
 
-		return null;
+		return;
 	}
 
 	private int calculateSurroundingMineCount(int rowIndex, int columnIndex) {
@@ -194,5 +190,17 @@ public class Game {
 		}
 
 		return surroundingMineCount;
+	}
+
+	private void showAllMines() {
+		for (Entry<Integer, TreeSet<Integer>> entry : mines.entrySet()) {
+			int rowIndex = entry.getKey();
+			Iterator<Integer> iterator = entry.getValue().iterator();
+
+			while (iterator.hasNext()) {
+				int columnIndex = iterator.next();
+				grid[rowIndex][columnIndex] = "M";
+			}
+		}
 	}
 }
